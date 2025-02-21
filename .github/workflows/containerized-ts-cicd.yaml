@@ -37,3 +37,10 @@ jobs:
           docker build -t "$DOCKER_USERNAME"/$DOCKER_REPOSITORY .
           docker push "$DOCKER_USERNAME"/$DOCKER_REPOSITORY:latest
 
+      - name: Deploy 
+        run: echo "I don't have an environment configured for this example, but this is where I would update my container image"
+
+      - name: Report
+        run: echo "I don't have a Slack org or channel configured for this example, but this is where I would notify my team of the results and/or send metrics to my chosen monitoring tool"
+
+
