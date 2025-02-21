@@ -1,0 +1,39 @@
+name: Containerized TS CICD
+
+on:
+  push: 
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Prepare
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+
+      - name: Build TS App
+        run: |
+          npm run build
+
+      - name: Test
+        run: |
+          npm run test
+
+      - name: Docker Login, Build Image and Push to Private Repository
+        env:
+          DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_REPOSITORY: ${{ vars.DOCKER_REPOSITORY }}
+        run: |
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          docker build -t "$DOCKER_USERNAME"/$DOCKER_REPOSITORY .
+          docker push "$DOCKER_USERNAME"/$DOCKER_REPOSITORY:latest
+
